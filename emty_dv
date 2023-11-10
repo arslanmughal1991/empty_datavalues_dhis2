@@ -1,0 +1,31 @@
+const fs = require('fs'); 
+
+// Read data from the external JSON file
+fs.readFile('data.json', 'utf8', (err, data) => {
+  if (err) {
+    console.error('Error reading the file:', err);
+    return;
+  }
+
+  
+  let jsonData = JSON.parse(data);
+
+  // Iterate through dataValues array andp perform modifications for only [aggregated] user maybe some other users entring manually other than aggregate_exchange_job
+  jsonData.dataValues.forEach(item => {
+    if (item.storedBy === "[aggregated]") {
+      item.value = "";
+    }
+  });
+
+  
+  let updatedJsonData = JSON.stringify(jsonData, null, 2);
+
+  // Write the updated JSON data back to the same file
+  fs.writeFile('data.json', updatedJsonData, 'utf8', err => {
+    if (err) {
+      console.error('Error writing to the file:', err);
+      return;
+    }
+    console.log('Data updated and saved to data.json');
+  });
+});
